@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% block title %}Model 1 CHO{% endblock %} {% block content
+%}
+<form method="POST">
+  <h3 align="center">Model 1 CHO</h3>
+  <div class="form-group">
+    <label for="CH3">CH3</label>
+    <input
+      type="CH3"
+      class="form-control"
+      id="CH3"
+      name="CH3"
+      placeholder="Enter number of CH3 groups"
+    />
+  </div>
+  <div class="form-group">
+    <label for="CH2">CH2</label>
+    <input
+      type="CH2"
+      class="form-control"
+      id="CH2"
+      name="CH2"
+      placeholder="Enter number of CH2 groups"
+    />
+  </div>  
+  <div class="form-group">
+    <label for="CH">CH</label>
+    <input
+      type="CH"
+      class="form-control"
+      id="CH"
+      name="CH"
+      placeholder="Enter number of CH groups"
+    />
+  </div>
+  <div class="form-group">
+    <label for="C">C</label>
+    <input
+      type="C"
+      class="form-control"
+      id="C"
+      name="C"
+      placeholder="Enter number of quaternary C atoms"
+    />  
+  </div>
+  <div class="form-group">
+    <label for="OH">OH</label>
+    <input
+      type="OH"
+      class="form-control"
+      id="OH"
+      name="OH"
+      placeholder="Enter number of OH groups"
+    />
+  </div>
+  <div class="form-group">
+    <label for="COC">COC</label>
+    <input
+      type="COC"
+      class="form-control"
+      id="COC"
+      name="COC"
+      placeholder="Enter number of ether groups"
+    />  
+  </div>
+  <div class="form-group">
+    <label for="C=O">C=O</label>
+    <input
+      type="C=O"
+      class="form-control"
+      id="C=O"
+      name="C=O"
+      placeholder="Enter enter number of doubly bonded oxygen atoms"
+    />
+  </div>
+  <div class="form-group">
+    <label for="DBE">DBE</label>
+    <input
+      type="DBE"
+      class="form-control"
+      id="DBE"
+      name="DBE"
+      placeholder="Enter double bond equivalent"
+    />  
+  </div>
+  <div class="form-group">
+    <label for="Tm">Tm</label>
+    <input
+      type="Tm"
+      class="form-control"
+      id="Tm"
+      name="Tm"
+      placeholder="Enter melting temperature"
+    />
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary">start calculation</button>
+</form>
+{% endblock %}

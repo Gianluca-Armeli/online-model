@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block title %}Model 2 N+Hal{% endblock %} {% block
+content %}
+<form method="POST">
+  <h3 align="center">Model 2 N+Hal</h3>
+    <div class="form-group">
+    <label for="smiles">SMILES</label>
+    <input
+      type="smiles"
+      class="form-control"
+      id="smiles"
+      name="smiles"
+      placeholder="Enter SMILES string"
+    />
+  </div>
+  <div class="form-group">
+    <label for="M">M</label>
+    <input
+      type="M"
+      class="form-control"
+      id="M"
+      name="M"
+      placeholder="Enter molar mass"
+    />
+  </div>
+  <div class="form-group">
+    <label for="Tm">Tm</label>
+    <input
+      type="Tm"
+      class="form-control"
+      id="Tm"
+      name="Tm"
+      placeholder="Enter melting temperature"
+    />
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary">Start</button>
+</form>
+{% endblock %}
