@@ -27,4 +27,3 @@ termcolor==1.1.0
 threadpoolctl==2.1.0
 Werkzeug==2.0.2
 wrapt==1.12.1
-xkit==0.0.0
