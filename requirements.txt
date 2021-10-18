@@ -50,7 +50,6 @@ pandas==1.2.3
 paramiko==2.6.0
 pexpect==4.6.0
 Pillow==7.0.0
-pkg_resources==0.0.0
 protobuf==3.15.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
