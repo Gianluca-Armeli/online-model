@@ -1,4 +1,6 @@
 name: myproject
+channels:
+  - rdkit
 dependencies:
   - click=7.0=py37_0
   - cloudpickle=1.3.0=py_0
