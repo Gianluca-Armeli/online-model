@@ -1,4 +1,4 @@
-name: base
+name: myproject
 channels:
   - rdkit
   - defaults
