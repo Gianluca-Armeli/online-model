@@ -7,7 +7,7 @@ pd.set_option('display.width', 150)
 
 # CHO data frame
 names = ['smiles', 'Tm', 'Tg']
-for i in range(200):
+for i in range(208):
     names.append(str(i))
 df_cho = pd.read_csv('median_rdd_CHO_new.txt', delim_whitespace=True, names=names)
 df_cho = df_cho.drop(['smiles'], axis=1)
@@ -28,7 +28,7 @@ for col in names:
 
 # nhal data frame
 names = ['smiles', 'Tm', 'Tg']
-for i in range(200):
+for i in range(208):
     names.append(str(i))
 df_nhal = pd.read_csv('median_rdd_nhal.txt', delim_whitespace=True, names=names)
 df_nhal = df_nhal.drop(['smiles'], axis=1)

@@ -37,8 +37,8 @@ featurizer = dc.feat.WeaveFeaturizer()
 X = featurizer.featurize(mols)
 print(X)
 '''
-mol = Chem.MolFromSmiles("CCC")
-atom = mol.GetAtoms()[2]
+#mol = Chem.MolFromSmiles("CCC")
+#atom = mol.GetAtoms()[2]
 #print(dc.feat.graph_features.get_feature_list(atom))
 # Using ConvMolFeaturizer to create featurized fragments derived from molecules of interest.
 # This is used only in the context of performing interpretation of models using atomic
@@ -111,63 +111,10 @@ logger = logging.getLogger(__name__)
 ZINC_CHARSET = ['#', ')', '(', '+', '-', '/', '1', '3', '2', '5', '4', '7', '6', '8', '=',
     '@', 'C', 'B', 'F', 'I', 'H', 'O', 'N', 'S', '[', ']', '\\', 'c', 'l', 'o', 'n', 'p', 's', 'r']
 
-class OneHotFeaturizer(Featurizer):
 
-    def __init__(self, charset: List[str] = ZINC_CHARSET, max_length: int = 100):
-        if len(charset) != len(set(charset)):
-            raise ValueError("All values in charset must be unique.")
-        self.charset = charset
-        self.max_length = max_length
-
-    def featurize(self, datapoints: Iterable[Any], log_every_n: int = 1000) -> np.ndarray: 
-        datapoints = list(datapoints)
-        if (len(datapoints) < 1):
-            return np.array([]) # Featurize data using featurize() in grandparent class
-        return Featurizer.featurize(self, datapoints, log_every_n)
-
-    def _featurize(self, datapoint: Any): # Featurize str data
-        if (type(datapoint) == str):
-            return self._featurize_string(datapoint)
-        # Featurize mol data
-        else:
-            return self._featurize_mol(datapoint)
-
-    def _featurize_string(self, string: str) -> np.ndarray:
-    # validation
-	    if (len(string) > self.max_length):
-	        logger.info("The length of {} is longer than `max_length`. So we return an empty array.")
-	        return np.array([])
-
-	    string = self.pad_string(string)  # Padding
-	    return np.array([
-	        one_hot_encode(val, self.charset, include_unknown_set=True)
-	        for val in string])
-
-    def _featurize_mol(self, mol: RDKitMol) -> np.ndarray:
-	    try:
-	        from rdkit import Chem
-	    except ModuleNotFoundError:
-	        raise ImportError("This class requires RDKit to be installed.")
-	    smiles = Chem.MolToSmiles(mol)  # Convert mol to SMILES string.
-	    return self._featurize_string(smiles)  # Use string featurization.
-    def pad_smile(self, smiles: str) -> str:
-        return self.pad_string(smiles)
-
-    def pad_string(self, string: str) -> str:
-        return string.ljust(self.max_length)
-    
-    def untransform(self, one_hot_vectors: np.ndarray) -> str:
-	    string = ""
-	    for one_hot in one_hot_vectors:
-	        try:
-	            idx = np.argmax(one_hot)
-	            string += self.charset[idx]
-	        except IndexError:
-	            string += ""
-	    return string
-
-# smiles = ["C", "CCC"]
-# featurizer = RDKitDescriptors()
-# x = featurizer.featurize(mol)
-# #print(x.shape)
+smiles = ["C", "CCC"]
+mol = Chem.MolFromSmiles("CCC")
+featurizer = RDKitDescriptors()
+x = featurizer.featurize(mol)
+print(x.shape)
 # new_file(x, 'RDKitDescriptors')
