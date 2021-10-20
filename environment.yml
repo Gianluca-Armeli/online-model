@@ -2,6 +2,4 @@ name: myproject
 channels:
   - rdkit
 dependencies:
-  - flask=1.1.1=py_0
-  - python=3.7.6=h0371630_2
   - rdkit=2020.03.3.0=py37hc20afe1_1
