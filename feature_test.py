@@ -112,9 +112,9 @@ ZINC_CHARSET = ['#', ')', '(', '+', '-', '/', '1', '3', '2', '5', '4', '7', '6',
     '@', 'C', 'B', 'F', 'I', 'H', 'O', 'N', 'S', '[', ']', '\\', 'c', 'l', 'o', 'n', 'p', 's', 'r']
 
 
-smiles = ["C", "CCC"]
-mol = Chem.MolFromSmiles("CCC")
-featurizer = RDKitDescriptors()
-x = featurizer.featurize(mol)
-print(x.shape)
+# smiles = ["C", "CCC"]
+# mol = Chem.MolFromSmiles("CCC")
+# featurizer = RDKitDescriptors()
+# x = featurizer.featurize(mol)
+# print(x.shape)
 # new_file(x, 'RDKitDescriptors')
