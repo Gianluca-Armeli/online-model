@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import numpy as np
 import pickle
-from zero_columns import zero_cols_cho, zero_cols_nhal
 
 app = Flask(__name__)
 
