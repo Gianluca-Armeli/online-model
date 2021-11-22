@@ -17,32 +17,32 @@ def results():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        try:
-            smiles = request.form.get('smiles')
-            if smiles == 'n':
-                return redirect(url_for('no_smiles'))    
-            else:    
-                Tm = (request.form.get('Tm'))
-                pickle_in1 = open('pickle/mol_from_smiles', 'rb')
-                converter = pickle.load(pickle_in1)
-                mol = converter.molsmiles(smiles)
-                pickle_in2 = open('pickle/rdkit_des','rb')
-                feat = pickle.load(pickle_in2)
-                fp = feat.featurize(mol)
-                fp = fp.reshape((208,1))
+    #try:
+        smiles = request.form.get('smiles')
+        if smiles == 'n':
+            return redirect(url_for('no_smiles'))    
+        else:    
+            Tm = (request.form.get('Tm'))
+            pickle_in1 = open('pickle/mol_from_smiles', 'rb')
+            converter = pickle.load(pickle_in1)
+            mol = converter.molsmiles(smiles)
+            pickle_in2 = open('pickle/rdkit_des','rb')
+            feat = pickle.load(pickle_in2)
+            fp = feat.featurize(mol)
+            fp = fp.reshape((208,1))
 
-                if Tm == 'n':
-                    model = load('new/mod_2_nhal_no_tm')
-                    y_pred = model.predict(fp.transpose())
-                    return render_template('results2.html', Tg=y_pred)
-                else:
-                    X_pred = np.concatenate(([[float(Tm)]], fp.reshape((fp.shape[0], 1))), axis=0)                
-                    X_pred = X_pred.transpose()
-                    model = load('new/mod_2_nhal')
-                    y_pred = model.predict(X_pred)
-                    return render_template('results2.html', Tg=y_pred)	
-        except:
-            return render_template('results2.html', Tg='Schlumpf!')
+            if Tm == 'n':
+                model = load('new/mod_2_nhal_no_tm')
+                y_pred = model.predict(fp.transpose())
+                return render_template('results2.html', Tg=y_pred)
+            else:
+                X_pred = np.concatenate(([[float(Tm)]], fp.reshape((fp.shape[0], 1))), axis=0)                
+                X_pred = X_pred.transpose()
+                model = load('new/mod_2_nhal')
+                y_pred = model.predict(X_pred)
+                return render_template('results2.html', Tg=y_pred)	
+    #except:
+     #   return render_template('results2.html', Tg='Schlumpf!')
     else:
         return render_template("home_2.html")
 
