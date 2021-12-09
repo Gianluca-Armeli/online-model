@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
+from rdkit.Chem import MolFromSmiles
+from feature_test import RDKitDescriptors
 import numpy as np
 import pickle
 
@@ -23,12 +25,9 @@ def home():
             return redirect(url_for('no_smiles'))    
         else:    
             Tm = (request.form.get('Tm'))
-            pickle_in1 = open('pickle/mol_from_smiles', 'rb')
-            converter = pickle.load(pickle_in1)
-            mol = converter.molsmiles(smiles)
-            pickle_in2 = open('pickle/rdkit_des','rb')
-            feat = pickle.load(pickle_in2)
-            fp = feat.featurize(mol)
+            mol = MolFromSmiles(smiles)
+            featurizer = RDKitDescriptors()
+            fp = featurizer.featurize(mol)
             fp = fp.reshape((208,1))
 
             if Tm == 'n':
