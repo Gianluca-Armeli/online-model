@@ -1,5 +1,5 @@
 import numpy as np
-from rdkit.Chem import Descriptors, MolFromSmiles
+from modules import Descriptors #, MolFromSmiles
 from deepchem.feat.base_classes import MolecularFeaturizer
 import logging
 from deepchem.utils.typing import RDKitMol
