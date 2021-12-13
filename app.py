@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from rdkit.Chem import MolFromSmiles
-from feature_test import RDKitDescriptors
+#from rdkit.Chem import MolFromSmiles
+#from feature_test import RDKitDescriptors
 import numpy as np
 import pickle
 
