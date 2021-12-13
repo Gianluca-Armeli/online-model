@@ -3,6 +3,28 @@ from rdkit.Chem import MolFromSmiles
 #from feature_test import RDKitDescriptors
 import numpy as np
 import pickle
+import deepchem as dc
+from deepchem.feat.base_classes import MolecularFeaturizer
+from deepchem.feat.complex_featurizers import ComplexNeighborListFragmentAtomicCoordinates
+from deepchem.feat.mol_graphs import ConvMol, WeaveMol
+from deepchem.data import DiskDataset
+import logging
+from typing import Optional, List, Union, Iterable
+from deepchem.utils.typing import RDKitMol, RDKitAtom
+import deepchem as dc
+from rdkit import Chem
+from rdkit.Chem import Draw
+from rdkit.Chem import Descriptors
+from rdkit.Chem import AllChem
+from rdkit import DataStructs
+from deepchem.utils.typing import RDKitMol
+from deepchem.feat.base_classes import MolecularFeaturizer
+import logging
+from typing import List
+from deepchem.utils.typing import RDKitMol
+from deepchem.utils.molecule_feature_utils import one_hot_encode
+from deepchem.feat.base_classes import Featurizer
+from typing import Any, Iterable
 
 app = Flask(__name__)
 
