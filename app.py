@@ -1,15 +1,15 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-# from rdkit.Chem import MolFromSmiles
-# from feature_test import RDKitDescriptors
-# import numpy as np
-# import pickle
+from rdkit.Chem import MolFromSmiles
+from feature_test import RDKitDescriptors
+import numpy as np
+import pickle
 
 app = Flask(__name__)
 
-# def load(model_name):
-#         pickle_in = open('pickle/{}'.format(model_name),'rb')
-#         model = pickle.load(pickle_in)
-#         return model
+def load(model_name):
+        pickle_in = open('pickle/{}'.format(model_name),'rb')
+        model = pickle.load(pickle_in)
+        return model
         
 
 @app.route('/results')
