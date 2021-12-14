@@ -1,6 +1,6 @@
 import os
 # unset so to trigger exceptions and track use: RDBaseDir=os.environ['RDBASE']
-RDCodeDir=os.path.join(r'C:/Temp/pip-req-build-ay6sk4kc/build/temp.win-amd64-3.7/Release/rdkit_install\Lib\site-packages','rdkit')
+RDCodeDir=os.path.join(r'/tmp/pip-req-build-v769so2y/build/temp.linux-x86_64-3.8/rdkit_install/lib/python3.8/site-packages','rdkit')
 # not really hard-coded alternative RDCodeDir=os.path.dirname(__file__)
 _share = os.path.dirname(__file__)
 RDDataDir=os.path.join(_share,'Data')
