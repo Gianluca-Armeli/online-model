@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-#from rdkit.Chem import MolFromSmiles
+from rdkit.Chem import MolFromSmiles
 #from feature_test import RDKitDescriptors
 import numpy as np
 import pickle
-import tensorflow
-'''
+
+
 import deepchem as dc
 from deepchem.feat.base_classes import MolecularFeaturizer
 from deepchem.feat.complex_featurizers import ComplexNeighborListFragmentAtomicCoordinates
@@ -64,7 +64,7 @@ class RDKitDescriptors(MolecularFeaturizer):
 logger = logging.getLogger(__name__)
 ZINC_CHARSET = ['#', ')', '(', '+', '-', '/', '1', '3', '2', '5', '4', '7', '6', '8', '=',
     '@', 'C', 'B', 'F', 'I', 'H', 'O', 'N', 'S', '[', ']', '\\', 'c', 'l', 'o', 'n', 'p', 's', 'r']
-'''
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'das wiesel läuft um mitternacht'
