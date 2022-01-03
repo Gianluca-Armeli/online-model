@@ -1,10 +1,12 @@
 {% extends "base2.html" %} {% block title %}No smiles mode{% endblock %} {% block content %}
 <form method="POST">
   <div align="center"><h3 >No SMILES mode</h3>
-  <br />
   If you don't have a melting point, type 'n' (without quotation marks) in the Tm field.
   <br />
-  However, we recommend using the SMILES mode if no Tm is available.</div><br />
+  However, we recommend using the SMILES mode if no Tm is available.
+  <br />
+  <a href="{{url_for('info')}}">Click here to get a detailed description of the input variables.</a>
+  </div><br />
   <div align="center" class="form-group">
     <label for="CH3">CH3</label>
     <input
@@ -43,10 +45,10 @@
     <input
       type="C"
       class="form-control"
-      size="50"
+      size="70"
       id="C"
       name="C"
-      placeholder="Enter number of quaternary C atoms"
+      placeholder="Enter number of C atoms that were not included in the previous fields"
     />  
   </div><br />
   <div align="center" class="form-group">
