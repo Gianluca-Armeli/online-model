@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block tab %}Results{% endblock %}
+{% block title %}Results{% endblock %} 
+{% block content %}
+
+<br />
+The following result was calculated with model configuration: <font face="Helvetica"><i>{{mode}}</i></font>
+<br /><br />
+Sum formula of chemical compound: <font face="Helvetica"><i>{{sum_formula}}</i></font>
+<br /><br />
+Molar mass: <font face="Helvetica"><i>{{M}} g/mol</i></font>
+<br /><br />
+<h3>Predicted T<sub>g</sub>: <font face="Helvetica"><i>{{Tg}} K</i></font></h3>
+<br />
+Cross validation score: Mean absolute error = <font face="Helvetica"><i>+- {{mae}} K</i></font>
+<br /><br />
+
+{% if mode == 'SMILES mode, no Tm' or mode == 'SMILES mode with Tm' %}
+<div align="center"><a href="{{url_for('smiles')}}"><button type="submit" class="btn btn-primary">new calculation</button></a>
+</div>
+{% else %}
+<div align="center"><a href="{{url_for('no_smiles')}}"><button type="submit" class="btn btn-primary">new calculation</button></a>
+</div><br />
+{% endif %}
+<br />
+<div align="center"><pre>If you want to keep your previous input for a new calculation, just use the "back" function of your browser.
+</pre></div>
+{% endblock %}

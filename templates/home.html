@@ -1,0 +1,40 @@
+{% extends "base.html" %} 
+{% block tab %}Home{% endblock %}
+<form method="POST">
+<div align="center"><pre>Version 1.0, updated on January 18th 2022</pre></div>
+{% block nav %}
+<nav class="navbar navbar-expand-md navbar-dark">
+          <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" 
+          data-bs-target="#toggleMobileMenu" aria-controls="toggleMobileMenu"
+          aria-expanded="false" aria-lable="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="toggleMobileMenu">
+            <ul class="navbar-nav ms-auto">
+              <li>
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li>
+                <a class="nav-link" href="/smiles">SMILES mode</a>
+              </li>
+              <li>
+                <a class="nav-link" href="/no_smiles">no SMILES mode</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+{% endblock %} 
+{% block title %} Introduction {% endblock %}
+
+{% block text %}
+This model contains a machine-learning algorithm that was trained to predict the glass transition temperature T<sub>g</sub> of molecular organic substances. The model provides two different modes of operation depending upon the availability of input parameters describing the molecular structure. The <i><b>SMILES mode</b></i> version requires information on the molecular structure in the format of the Simplified Molecular-Input Line-Entry System (SMILES), which is a standardized method to describe the chemical structure of a molecule in a single string. To generate a SMILES string from a chemical structure, several independent tools are available such as the <a target="_blank" rel="noopener noreferrer"href="http://www.cheminfo.org/flavor/malaria/Utilities/SMILES_generator___checker/index.html">SMILES Generator</a>.
+<br />
+The other version, the <i><b>no SMILES mode</b></i>, can be used without knowledge of a SMILES string, which, however, goes along with a reduced accuracy in the predicted T<sub>g</sub>.
+For further information on the physical background of the model, we refer to the following paper.
+<br />
+<h3 align="center">Choose a mode from the navigation bar above</h3>
+{% endblock %}
+
+</form>
+{% block content %}
+{% endblock %}

@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<div align="center"><h1>ERROR</h3>
-</head> 
-<pre>Something went wrong. Please go back and check if you have followed all instructions correctly.<br />
-Maybe an input field was not filled before starting the calculation or a wrong input format was used. 
- </pre>
-</body>
-</html>
+{% extends "base.html" %} 
+{% block tab %}Error{% endblock %} 
+{% block title %}Error{% endblock %} 
+
+{% block text %}
+Something went wrong. Please go back and check whether you have followed all instructions correctly.<br />
+Either an input field was not filled out properly before starting the calculation <br />
+or a wrong input format was used in at least one of the input fields. 
+{% endblock %}

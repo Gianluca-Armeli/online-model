@@ -1,28 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<form method="POST">
-  <div align="center"><h3>Meaning of the input variables (features)</h3>
- </head> 
- <pre>The features were designed in a way that excludes atoms to be counted multiple times.<br /> This means, if every feature is entered correctly, the exact sum formula of the molecule can be generated from the features.<br />
- For example, the feature 'COC' only asks for the oxygen atom.<br />The related carbon atoms have to be considered separately in their respective features, otherwise there would be carbon atoms missing.</pre>
+{% extends "base.html" %} 
+{% block tab %}Feature information{% endblock %} 
+
+{% block title %}Meaning of the input variables (features){% endblock %}
+
+{% block text %}
+ <p>The features were designed such that accidental multiple counting of atoms is avoided.<br /> Hence, if every feature is entered correctly, the correct sum formula of the molecule is generated from the features.<br /> 
+ For example, the feature -C-O-C- asks for the number of oxygen atom in ether groups only.<br /> The corresponding carbon atoms are considered separately in their respective features.</p>
   <br />
-  </div>
+{% endblock %}
+
+{% block content %}
     <div size="30" style="line-height:1.5" align="center" class="form-group">
-    <b>CH3:</b> The number of methyl (CH3) groups.<br />
-    <b>CH2:</b> The number of methylen (CH2) groups.<br />
-    <b>CH:</b> The number of CH groups.<br />
-    <b>C:</b> The number of carbon atoms that are not bonded to any hydrogen atoms.<br />
-    <b>OH:</b> The number of hydroxyl groups.<br />
-    <b>COC:</b> The number of oxygen atoms with an ether functionality. This accounts only for the oxygen and not for the related carbon atoms.<br />
-    <b>C=O:</b> The number of doubly bonded oxygen atoms. This accounts only for the oxygen and not for the other atoms involved.<br />
-    <b>N:</b> The number of nitrogen atoms.<br />
-    <b>Hal:</b> The number of halogen atoms.<br />
-    <b>DBE:</b> The double bond equivalent defined as DBE = 1 + sum(ni (vi - 2)), where ni is the number of atoms with the valence vi.<br />
-    <b>Tm:</b> The melting temperature in Kelvin.<br />
-    <br />
-    <a href="{{url_for('no_smiles')}}">Back to the calculator</a>
+    <table>
+    <tr><td><b>-CH<sub>3</sub>:</b></td><td>The number of methyl (-CH<sub>3</sub>) groups.</td></tr>
+    <tr><td><b>-CH<sub>2</sub>:</b></td><td>The number of methylen (-CH<sub>2</sub>) groups.</td></tr>
+    <tr><td><b>-CH:</b></td><td>The number of -CH groups.</td></tr>
+    <tr><td><b>-C-:</b></td><td>The number of carbon atoms that are not bonded to any hydrogen atoms.</td></tr>
+    <tr><td><b>-OH:</b></td><td>The number of hydroxyl groups.</td></tr>
+    <tr><td><b>-O-:</b></td><td>The number of oxygen atoms within an ether functionality.<br /> This accounts for the oxygen atoms only, and not for other related atoms involved.</td></tr>
+    <tr><td><b>=O:</b></td><td>The number of doubly bonded oxygen atoms.<br /> This accounts for the oxygen atoms only, and not for the other atoms involved.</td></tr>
+    <tr><td><b>N:</b></td><td>The number of nitrogen atoms.</td></tr>
+    <tr><td><b>Hal:</b></td><td>The number of halogen atoms, i.e. -F, -Cl, -Br and -I.</td></tr>
+    <tr><td><b>DBE:</b></td><td>The <a href="https://en.wikipedia.org/wiki/Degree_of_unsaturation">double bond equivalent</a> defined as DBE = 1 + sum[n<sub>i</sub> (v<sub>i</sub> - 2)],<br /> where n<sub>i</sub> is the number of atoms with the valence v<sub>i</sub> (number of regular bonding partners).<br /> E.g. v<sub>i</sub> = 1 for halogens, 2 for oxygen and 3 for nitrogen.</td></tr>
+    <tr><td><b>T<sub>m</sub>:</b></td><td>The melting temperature in Kelvin.</td></tr>
+  </table>
   </div>
-</form>
-</body>
-</html>
+
+{% endblock %}

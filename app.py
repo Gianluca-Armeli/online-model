@@ -1,70 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from rdkit.Chem import MolFromSmiles
-#from feature_test import RDKitDescriptors
-import numpy as np
+from rdkit.Chem.Descriptors import MolWt
 import pickle
-
-
-import deepchem as dc
-from deepchem.feat.base_classes import MolecularFeaturizer
-from deepchem.feat.complex_featurizers import ComplexNeighborListFragmentAtomicCoordinates
-from deepchem.feat.mol_graphs import ConvMol, WeaveMol
-from deepchem.data import DiskDataset
-import logging
-from typing import Optional, List, Union, Iterable
-from deepchem.utils.typing import RDKitMol, RDKitAtom
-import deepchem as dc
-from rdkit import Chem
-from rdkit.Chem import Draw
-from rdkit.Chem import Descriptors
-from rdkit.Chem import AllChem
-from rdkit import DataStructs
-from deepchem.utils.typing import RDKitMol
-from deepchem.feat.base_classes import MolecularFeaturizer
-import logging
-from typing import List
-from deepchem.utils.typing import RDKitMol
-from deepchem.utils.molecule_feature_utils import one_hot_encode
-from deepchem.feat.base_classes import Featurizer
-from typing import Any, Iterable
-
-class RDKitDescriptors(MolecularFeaturizer):
-
-    def __init__(self, use_fragment=True, ipc_avg=True):
-        self.use_fragment = use_fragment
-        self.ipc_avg = ipc_avg
-        self.descriptors = []
-        self.descList = []
-        
-    def _featurize(self, mol: RDKitMol) -> np.ndarray:
-        if len(self.descList) == 0:
-            try:
-                from rdkit.Chem import Descriptors
-                for descriptor, function in Descriptors.descList:
-                    if self.use_fragment is False and descriptor.startswith('fr_'):
-                        continue
-                    self.descriptors.append(descriptor)
-                    self.descList.append((descriptor, function))
-            except ModuleNotFoundError:
-                raise ImportError("This class requires RDKit to be installed.")
-
-        # check initialization
-        assert len(self.descriptors) == len(self.descList)
-
-        features = []
-        for desc_name, function in self.descList:
-            if desc_name == 'Ipc' and self.ipc_avg:
-                feature = function(mol, avg=True)
-            else:
-                feature = function(mol)
-            features.append(feature)
-        return np.asarray(features)
-
-
-logger = logging.getLogger(__name__)
-ZINC_CHARSET = ['#', ')', '(', '+', '-', '/', '1', '3', '2', '5', '4', '7', '6', '8', '=',
-    '@', 'C', 'B', 'F', 'I', 'H', 'O', 'N', 'S', '[', ']', '\\', 'c', 'l', 'o', 'n', 'p', 's', 'r']
-
+import warnings
+import numpy as np
+from methods import *
+warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'das wiesel läuft um mitternacht'
@@ -73,7 +14,11 @@ def load(model_name):
         pickle_in = open('pickle/{}'.format(model_name),'rb')
         model = pickle.load(pickle_in)
         return model
-        
+  
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 @app.route('/info')
 def info():
     return render_template('info.html')
@@ -84,99 +29,176 @@ def error():
 
 @app.route('/results')
 def results():
-    return render_template('results2.html')
+    return render_template('results.html')
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
+@app.route('/smiles', methods = ['GET', 'POST'])
+def smiles():
     if request.method == 'POST':
-        try:
-            smiles = request.form.get('smiles')
-            if smiles == 'n':
-                return redirect(url_for('no_smiles'))    
-            else:    
-                Tm = (request.form.get('Tm'))
-                mol = MolFromSmiles(smiles)
-                featurizer = RDKitDescriptors()
-                fp = featurizer.featurize(mol)
-                fp = fp.reshape((208,1))
+        #try:
+        smiles = request.form.get('smiles')
+        if smiles == '':
+            flash('SMILES input field can\'t be empty!', category='error')
+            return redirect(url_for('smiles'))    
+        elif smiles.isnumeric() or ('C' not in smiles and smiles != 'O'):
+            flash('Invalid SMILES string!', category='error')
+            return redirect(url_for('smiles'))    
+        else:
+            smiles = smiles.strip()
+            mode = 'SMILES mode, no Tm'
+            if seek_duplicates(mode, smiles):
+                flash('This compound is part of the training set. Tg literature value: '+str(dic[smiles])+' K', category='note')
+            Tm = request.form.get('Tm')
+            mol = MolFromSmiles(smiles)
+            featurizer = RDKitDescriptors()
+            fp = featurizer.featurize(mol)
+            fp = fp.reshape((208,1))
+            M = round(MolWt(mol), 1)
 
-                if Tm == 'n':
-                    model = load('new/mod_2_nhal_no_tm')
-                    y_pred = model.predict(fp.transpose())
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')
+            if Tm == '':
+                model = load('mod_2_nhal_no_tm')
+                y_pred = model.predict(fp.transpose())
+                return render_template('results.html', mode=mode,
+                                        sum_formula=FormFromMol(mol), M=str(M),  Tg=str(round(y_pred[0], 1)), mae='15.1')
+            else:
+                if not Tm.lstrip('-').isdigit():
+                    flash('Tm must be a number!', category='error')
+                    return render_template("smiles.html")
+                elif float(Tm) <= 0:
+                    flash('Tm must be positive!', category='error')
+                    return render_template("smiles.html")
+                elif float(Tm) > 666:
+                    flash('Tm value is too large!', category='error')
+                    return render_template("smiles.html")
                 else:
-                    if float(Tm) < 0:
-                        flash('Tm must be positive', category='error')
                     X_pred = np.concatenate(([[float(Tm)]], fp.reshape((fp.shape[0], 1))), axis=0)                
                     X_pred = X_pred.transpose()
-                    model = load('new/mod_2_nhal')
+                    model = load('mod_2_nhal')
                     y_pred = model.predict(X_pred)
 
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')	
-        except:
-            return render_template('error.html')
+                    return render_template('results.html', mode='SMILES mode with Tm',
+                                           sum_formula=FormFromMol(mol), M=str(M), Tg=str(round(y_pred[0], 1)), mae='11.7')	
+        #except:
+        #    return redirect(url_for('error'))
+
     else:
-        return render_template("home_2.html")
+        return render_template("smiles.html")
 
 @app.route('/no_smiles', methods=['GET', 'POST'])
 def no_smiles():
     if request.method == 'POST':
-        try:
-            CH3 = int(request.form.get('CH3'))
-            CH2 = int(request.form.get('CH2'))
-            CH = int(request.form.get('CH'))
-            C = int(request.form.get('C'))
-            OH = int(request.form.get('OH'))
-            COC = int(request.form.get('COC'))
-            CO = int(request.form.get('C=O'))
-            N = int(request.form.get('N'))
-            Hal = int(request.form.get('Hal'))
-            DBE = int(request.form.get('DBE'))
-            Tm = request.form.get('Tm')
-            Ct = CH3 + CH2 + CH + C
-            O = OH + COC + CO
-            
-            if N == 0 and Hal == 0:
-                H = 2*(Ct - DBE + 1)
-                if Tm == 'n':
-                    X_pred = [CH3,CH2,CH,C,OH,COC,CO,DBE]                            
-                    X_pred.extend([Ct, H, O])
-                    X_pred.insert(8, O/Ct)
-                    X_pred.insert(9, 12*Ct + H + 16*O)                
-                    model = load('new/mod_1_cho_no_tm')
-                    y_pred = model.predict(np.array([X_pred]))                
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')
-                else:
-                    X_pred = [CH3,CH2,CH,C,OH,COC,CO,DBE,float(Tm)]                            
-                    X_pred.extend([Ct, H, O])
-                    X_pred.insert(8, O/Ct)
-                    X_pred.insert(9, 12*Ct + H + 16*O)                
-                    model = load('new/mod_1_cho')
-                    y_pred = model.predict(np.array([X_pred]))                
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')
+        #try:
+        Hal = 0
+        hal_list = []
+        hal = []
+        hal_list.append(request.form.get('F'))
+        hal_list.append(request.form.get('Cl'))
+        hal_list.append(request.form.get('Br'))
+        hal_list.append(request.form.get('I'))
+        for h in hal_list:
+            if h == '':
+                hal.append(0)
             else:
-                H = 2*(Ct - DBE + 1) + N - Hal
-                if Tm == 'n':        
-                    X_pred = [CH3,CH2,CH,C,OH,COC,CO,DBE,N,Hal]            
-                    X_pred.extend([Ct, H, O])
-                    X_pred.insert(10, O/Ct)
-                    X_pred.insert(11, 12*Ct + H + 16*O)                
-                    model = load('new/mod_1_nhal_no_tm')
-                    y_pred = model.predict(np.array([X_pred]))        
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')
-                else:
-                    X_pred = [CH3,CH2,CH,C,OH,COC,CO,DBE,N,Hal,float(Tm)]            
-                    X_pred.extend([Ct, H, O])
-                    X_pred.insert(10, O/Ct)
-                    X_pred.insert(11, 12*Ct + H + 16*O)                
-                    model = load('new/mod_1_nhal')
-                    y_pred = model.predict(np.array([X_pred]))        
-                    return render_template('results2.html', Tg=str(round(y_pred[0], 1))+' K')
-        except:
-            return redirect(url_for('error.html'))
+                hal.append(int(h))
+
+        Hal = sum(hal)
+        feat = []
+        feat.append(request.form.get('CH3')) 
+        feat.append(request.form.get('CH2'))
+        feat.append(request.form.get('CH'))
+        feat.append(request.form.get('C'))
+        feat.append(request.form.get('OH'))
+        feat.append(request.form.get('COC'))
+        feat.append(request.form.get('C=O'))
+        feat.append(request.form.get('N'))
+        feat.append(request.form.get('DBE'))
+        Tm = request.form.get('Tm')
+        if Tm == '':
+            Tm = 1000
+        
+        X_pred = []
+        for f in feat:
+            if f == '':
+                X_pred.append(0)
+            else:
+                X_pred.append(int(f))
+
+        X_pred.insert(8, Hal)        
+        Ct = X_pred[0] + X_pred[1] + X_pred[2] + X_pred[3]
+        O = X_pred[4] + X_pred[5] + X_pred[6]
+        
+        if X_pred[7] == 0 and X_pred[8] == 0:
+            H = 2*(Ct - X_pred[9] + 1)
+
+            formula_list = [['C', Ct], ['H', H], ['O', O]]
+            formula = make_formula(formula_list)
+            M = 12*Ct + H + 16*O
+            X_pred.extend([X_pred[7], X_pred[8], Ct, H, O])
+            del X_pred[7:9]
+            X_pred.insert(10, float(Tm))
+            X_pred.insert(10, round(O/Ct, 5))
+            X_pred.insert(11, M) 
+
+            if request.form.get('Tm') == '':
+                mode = 'no SMILES, CH/CHO compound, no Tm'
+                X_pred.remove(float(Tm))                                 
+                if seek_duplicates(mode, str(np.array(X_pred[:-3]))):
+                    flash('Input vector is part of the training set. Tg literature value: '
+                        +str(dic_ns_cho[str(np.array(X_pred[:-3]))])+' K', category='note')  
+                del X_pred[8:10]
+                model = load('mod_1_cho_no_tm')
+                y_pred = model.predict(np.array([X_pred]))                
+                return render_template('results.html', mode=mode,
+                                       sum_formula=formula, M=str(M), Tg=str(round(y_pred[0], 1)), mae='17.4')
+            else:
+                mode = 'no SMILES, CH/CHO compound with Tm'
+                if float(Tm) < 0:
+                    flash('Tm must be positive!', category='error')
+                if seek_duplicates(mode, str(np.array(X_pred[:-4]))):
+                    flash('Input vector is part of the training set. Tg literature value: '
+                        +str(dic_ns_cho[str(np.array(X_pred[:-4]))])+' K', category='note') 
+                del X_pred[8:10]              
+                model = load('mod_1_cho')
+                y_pred = model.predict(np.array([X_pred]))                
+                return render_template('results.html', mode=mode,
+                                       sum_formula=formula, M=str(M), Tg=str(round(y_pred[0], 1)), mae='13.3')
+        else:
+            H = 2*(Ct - X_pred[9] + 1) + X_pred[7] - X_pred[8]
+            formula_list = [['C', Ct], ['H', H], ['O', O], ['N', X_pred[7]],
+            ['F', hal[0]], ['Cl', hal[1]], ['Br', hal[2]], ['I', hal[3]]]
+            formula = make_formula(formula_list)
+            X_pred.extend([X_pred[7], X_pred[8], Ct, H, O])
+            M = 12*Ct + H + 16*O + X_pred[7]*14 + hal[0]*19 + hal[1]*35.4 + hal[2]*79.9 + hal[3]*126.9 
+            del X_pred[7:9]
+            X_pred.insert(10, float(Tm))
+            X_pred.insert(10, round(O/Ct,5))
+            X_pred.insert(11, M)  
+
+            if request.form.get('Tm') == '': 
+                mode = 'no SMILES, N/Hal compound, no Tm'       
+                X_pred.remove(float(Tm))
+                if seek_duplicates(mode, str(np.array(X_pred[:-3]))):
+                    flash('Input vector is part of the training set. Tg literature value: '
+                        +str(dic_ns_nhal[str(np.array(X_pred[:-3]))])+' K', category='note')                
+                model = load('mod_1.2_nhal_no_tm')
+                y_pred = model.predict(np.array([X_pred]))        
+                return render_template('results.html', mode=mode, 
+                    sum_formula=formula, M=str(M), Tg=str(round(y_pred[0], 1)), mae='20.4')
+            else:
+                mode = 'no SMILES, N/Hal compound with Tm'
+                if float(Tm) < 0:
+                    flash('Tm must be positive!', category='error')
+                if seek_duplicates(mode, str(np.array(X_pred[:-4]))):
+                    flash('Input vector is part of the training set. Tg literature value: '
+                        +str(dic_ns_nhal[str(np.array(X_pred[:-4]))])+' K', category='note')              
+                model = load('mod_1.2_nhal')
+                y_pred = model.predict(np.array([X_pred]))        
+                return render_template('results.html', mode=mode,
+                    sum_formula=formula, M=str(M), Tg=str(round(y_pred[0], 1)), mae='13.0')
+       # except:
+        #    return redirect(url_for('error'))
     else:
         return render_template('no_smiles.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", debug=True)

@@ -1,0 +1,65 @@
+{% extends "base.html" %} 
+{% block tab %}SMILES mode{% endblock %}
+{% block nav %}
+<nav class="navbar navbar-expand-md navbar-dark">
+          <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" 
+          data-bs-target="#toggleMobileMenu" aria-controls="toggleMobileMenu"
+          aria-expanded="false" aria-lable="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="toggleMobileMenu">
+            <ul class="navbar-nav ms-auto">
+              <li>
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li>
+                <a class="nav-link active" aria-current="page" href="/smiles">SMILES mode</a>
+              </li>
+              <li>
+                <a class="nav-link" href="/no_smiles">no SMILES mode</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+{% endblock %} 
+{% block title %}SMILES mode{% endblock %} 
+
+{% block text %}
+The <i>SMILES mode</i> version of our T<sub>g</sub> calculator requires the input of a SMILES string (see <a target="_blank" rel="noopener noreferrer"href="http://www.cheminfo.org/flavor/malaria/Utilities/SMILES_generator___checker/index.html">SMILES Generator</a>).
+If you don't have a SMILES string or melting point, leave the field blank.
+We recommend using both for best accuracy.<br /><br />
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">SMILES</td>
+      <td>
+      <input
+      type="smiles"
+      size="30"
+      id="smiles"
+      name="smiles"
+      placeholder="Enter SMILES string"
+      /></td>
+      </tr>
+      <tr>
+        <td align="center">T<sub>m</sub></td>
+        <td>
+    <input
+      type="Tm"
+      size="30"
+      id="Tm"
+      name="Tm"
+      placeholder="Enter melting temperature in K"
+    />
+        </td>
+   </tr>
+  </table> 
+  <br />
+</div>
+  <button type="submit" class="btn btn-primary">Start calculation</button>
+</form>
+{% endblock %}
