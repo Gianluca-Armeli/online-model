@@ -138,3 +138,20 @@ def seek_duplicates(mode, test):
 
 #print(seek_duplicates('SMILES mode with Tm', test))
 #print(seek_duplicates('no pound with Tm', test3))
+
+def is_float(x):
+    try:
+        a = float(x)
+    except (TypeError, ValueError):
+        return False
+    else:
+        return True
+
+def is_int(x):
+    try:
+        a = float(x)
+        b = int(a)
+    except (TypeError, ValueError):
+        return False
+    else:
+        return True

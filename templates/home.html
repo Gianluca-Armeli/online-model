@@ -1,7 +1,6 @@
 {% extends "base.html" %} 
 {% block tab %}Home{% endblock %}
-<form method="POST">
-<div align="center"><pre>Version 1.0, updated on January 18th 2022</pre></div>
+
 {% block nav %}
 <nav class="navbar navbar-expand-md navbar-dark">
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" 
@@ -32,9 +31,8 @@ This model contains a machine-learning algorithm that was trained to predict the
 The other version, the <i><b>no SMILES mode</b></i>, can be used without knowledge of a SMILES string, which, however, goes along with a reduced accuracy in the predicted T<sub>g</sub>.
 For further information on the physical background of the model, we refer to the following paper.
 <br />
-<h3 align="center">Choose a mode from the navigation bar above</h3>
+<!--h4 align="center">Choose a mode from the navigation bar above</h4><br /-->
 {% endblock %}
-
-</form>
 {% block content %}
+<pre>Version 1.0, updated on July 5th 2022</pre>
 {% endblock %}

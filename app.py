@@ -57,10 +57,10 @@ def smiles():
             if Tm == '':
                 model = load('mod_2_nhal_no_tm')
                 y_pred = model.predict(fp.transpose())
-                return render_template('results.html', mode=mode,
-                                        sum_formula=FormFromMol(mol), M=str(M),  Tg=str(round(y_pred[0], 1)), mae='15.1')
+                return render_template('results.html', mode=mode, smiles=smiles,
+                                        sum_formula=FormFromMol(mol), M=str(M), Tm='None',  Tg=str(round(y_pred[0], 1)), mae='15.1')
             else:
-                if not Tm.lstrip('-').isdigit():
+                if not is_int(Tm) or not is_float(Tm):
                     flash('Tm must be a number!', category='error')
                     return render_template("smiles.html")
                 elif float(Tm) <= 0:
@@ -75,8 +75,8 @@ def smiles():
                     model = load('mod_2_nhal')
                     y_pred = model.predict(X_pred)
 
-                    return render_template('results.html', mode='SMILES mode with Tm',
-                                           sum_formula=FormFromMol(mol), M=str(M), Tg=str(round(y_pred[0], 1)), mae='11.7')	
+                    return render_template('results.html', mode='SMILES mode with Tm', smiles=smiles,
+                                           sum_formula=FormFromMol(mol), M=str(M), Tm=str(Tm)+' K', Tg=str(round(y_pred[0], 1)), mae='11.7')	
         #except:
         #    return redirect(url_for('error'))
 

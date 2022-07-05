@@ -127,9 +127,10 @@
       {% endif %}
       {% endwith %}
 
-      <p class="lead" align="justify">{% block text %} {%endblock %}</p>
-      {% block content %}
-      {% endblock %}
+      <p class="lead" align="justify">
+      {% block text %} {%endblock %}
+      {% block content %} {% endblock %}
+      </p>
     </main>
 
     <footer class="mt-auto text-white-50">
@@ -142,4 +143,14 @@
     <!--script type="text/javascript" src="{{url_for('static', filename='myjs.js')}}"></script-->
 
   </body>
+
+<script type="text/javascript">
+  const res = document.getElementById("copy_result");
+  const copy_button = document.getElementById("copy_button");
+  copy_button.onclick = function () {
+    res.select();
+    document.execCommand("Copy");
+  };
+</script>
+
 </html>

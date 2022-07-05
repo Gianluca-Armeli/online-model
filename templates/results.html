@@ -7,12 +7,19 @@
 The following result was calculated with model configuration: <font face="Helvetica"><i>{{mode}}</i></font>
 <br /><br />
 Sum formula of chemical compound: <font face="Helvetica"><i>{{sum_formula}}</i></font>
-<br /><br />
+&emsp; &emsp;
 Molar mass: <font face="Helvetica"><i>{{M}} g/mol</i></font>
+&emsp; &emsp;
+Melting point: <font face="Helvetica"><i>{{Tm}}</i></font>
 <br /><br />
 <h3>Predicted T<sub>g</sub>: <font face="Helvetica"><i>{{Tg}} K</i></font></h3>
 <br />
-Cross validation score: Mean absolute error = <font face="Helvetica"><i>+- {{mae}} K</i></font>
+Mean absolute error (cross validation) = <font face="Helvetica"><i>± {{mae}} K</i></font>
+<br /><br />
+
+<input type="text" id="copy_result" size="130" 
+value="Mode: {{mode}}, SMILES: {{smiles}}, formula: {{sum_formula}}, Tm[K]: {{Tm}}, M[g/mol]: {{M}}, Tg[K]: {{Tg}}, mae[K]: ±{{mae}}">
+<button id="copy_button">copy</button>
 <br /><br />
 
 {% if mode == 'SMILES mode, no Tm' or mode == 'SMILES mode with Tm' %}
@@ -26,3 +33,4 @@ Cross validation score: Mean absolute error = <font face="Helvetica"><i>+- {{mae
 <div align="center"><pre>If you want to keep your previous input for a new calculation, just use the "back" function of your browser.
 </pre></div>
 {% endblock %}
+
